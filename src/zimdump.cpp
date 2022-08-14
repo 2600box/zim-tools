@@ -412,7 +412,11 @@ int subcmdShow(ZimDumper &app,  std::map<std::string, docopt::value> &args)
         if (args["--idx"]) {
             return app.dumpEntry(app.getEntry(args["--idx"].asLong()));
         } else {
-            return app.dumpEntry(app.getEntryByPath(args["--url"].asString()));
+            std::string entryPath = args["--url"].asString();
+            if ( args["--ns"] ) {
+              entryPath = args["--ns"].asString() + "/" + entryPath;
+            }
+            return app.dumpEntry(app.getEntryByPath(entryPath));
         }
     } catch(...) {
         std::cerr << "Entry not found" << std::endl;
