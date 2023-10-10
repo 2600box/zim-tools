@@ -78,6 +78,13 @@ class ZimDumper
     bool useHashedLongnames;
     bool ignoreLongnames;
 public:
+    void setUseHashedLongnames(bool value) {
+        useHashedLongnames = value;
+    }
+    void setIgnoreLongnames(bool value) {
+        ignoreLongnames = value;
+    }
+
     ZimDumper(const std::string& fname)
       : m_archive(fname),
         verbose(false)
@@ -417,8 +424,8 @@ int subcmdDump(ZimDumper &app,  std::map<std::string, docopt::value> &args)
 
     
     // Read new command-line arguments and set the ZimDumper's member variables
-    app.useHashedLongnames = args["--hashed-longnames"].asBool();
-    app.ignoreLongnames = args["--ignore-longnames"].asBool();
+    app.setUseHashedLongnames(args["--hashed-longnames"].asBool());
+    app.setIgnoreLongnames(args["--ignore-longnames"].asBool());
 return subcmdDumpAll(app, directory, redirect, filter);
 }
 
