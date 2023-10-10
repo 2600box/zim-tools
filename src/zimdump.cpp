@@ -491,6 +491,10 @@ int main(int argc, char* argv[])
 
     try {
         ZimDumper app(args["<file>"].asString());
+    bool useHashedLongnames = args["--hashed-longnames"].asBool();
+    bool ignoreLongnames = args["--ignore-longnames"].asBool();
+    app.setUseHashedLongnames(useHashedLongnames);
+    app.setIgnoreLongnames(ignoreLongnames);
 
         std::unordered_map<std::string, std::function<int(ZimDumper&, decltype(args)&)>> dispatchtable = {
             {"info",            subcmdInfo },
