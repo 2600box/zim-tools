@@ -78,6 +78,14 @@ class ZimDumper
     bool useHashedLongnames;
     bool ignoreLongnames;
 public:
+    bool getUseHashedLongnames() const {
+        return useHashedLongnames;
+    }
+
+    bool getIgnoreLongnames() const {
+        return ignoreLongnames;
+    }
+
     void setUseHashedLongnames(bool value) {
         useHashedLongnames = value;
     }
@@ -393,9 +401,9 @@ int subcmdDumpAll(ZimDumper &app, const std::string &outdir, bool redirect, std:
     app.dumpFiles(outdir, redirect, nsfilter);
 
     // Use the new member variables for the actual dumping logic
-    if (app.useHashedLongnames) {
+    if (app.getUseHashedLongnames()) {
         // Add logic to use hashed filenames for names exceeding 255 characters
-    } else if (app.ignoreLongnames) {
+    } else if (app.getIgnoreLongnames()) {
         // Add logic to skip writing files with names exceeding 255 characters
     }
 #endif
