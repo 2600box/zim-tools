@@ -73,7 +73,11 @@ class ZimDumper
     zim::Archive m_archive;
     bool verbose;
 
-  public:
+  
+    // Add new member variables for hashed and ignore options
+    bool useHashedLongnames;
+    bool ignoreLongnames;
+public:
     ZimDumper(const std::string& fname)
       : m_archive(fname),
         verbose(false)
@@ -380,6 +384,13 @@ int subcmdDumpAll(ZimDumper &app, const std::string &outdir, bool redirect, std:
     app.dumpFiles(outdir, false, nsfilter);
 #else
     app.dumpFiles(outdir, redirect, nsfilter);
+
+    // Use the new member variables for the actual dumping logic
+    if (app.useHashedLongnames) {
+        // Add logic to use hashed filenames for names exceeding 255 characters
+    } else if (app.ignoreLongnames) {
+        // Add logic to skip writing files with names exceeding 255 characters
+    }
 #endif
     return 0;
 }
@@ -404,7 +415,11 @@ int subcmdDump(ZimDumper &app,  std::map<std::string, docopt::value> &args)
         directory.pop_back();
     }
 
-    return subcmdDumpAll(app, directory, redirect, filter);
+    
+    // Read new command-line arguments and set the ZimDumper's member variables
+    app.useHashedLongnames = args["--hashed-longnames"].asBool();
+    app.ignoreLongnames = args["--ignore-longnames"].asBool();
+return subcmdDumpAll(app, directory, redirect, filter);
 }
 
 int subcmdShow(ZimDumper &app,  std::map<std::string, docopt::value> &args)
