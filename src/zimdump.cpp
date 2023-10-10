@@ -297,21 +297,12 @@ void ZimDumper::dumpFiles(const std::string& directory, bool symlinkdump, std::f
 
     }
 
-    
-  if ( filename.length() > 255 ) {
-    if (ignoreLongnames) {
-      // Skip this file if --ignore-longnames is enabled
-      continue;
-    } else if (useHashedLongnames) {
-      // Hash the filename if it is too long and the --hashed-longnames option is enabled
-      std::hash<std::string> hash_fn;
-      std::size_t hash = hash_fn(filename);
-      filename = std::to_string(hash);
-    } else {
-      // Existing logic for long filenames (if any)
+    if ( filename.length() > 255 ) {
+        std::ostringstream sspostfix, sst;
+        sspostfix << (++truncatedFiles);
+        sst << filename.substr(0, 254-sspostfix.tellp()) << "~" << sspostfix.str();
+        filename = sst.str();
     }
-  }
-
 
     std::stringstream ss;
     ss << dir << filename;
@@ -362,32 +353,20 @@ Selectors:
                If no `--url` is provided (for  `zimdump dump`) default to no filter.
 
 Options:
-  --hashed-longnames  Use hashed filenames for names exceeding 255 characters.
-  --ignore-longnames  Skip writing files with names exceeding 255 characters.
   --details    Show details about the articles. Else, list only the url of the article(s).
   --dir=DIR    Directory where to dump the article(s) content.
   --redirect   Use symlink to dump redirect articles. Else create html redirect file
   -h, --help   Show this help
   --version    Show zimdump version.
 
+    --hashed-longnames  Use hashed filenames for names exceeding 255 characters.
+    --ignore-longnames  Skip writing files with names exceeding 255 characters.
 Return value:
   0 : If no error
   1 : If no (or more than 1) articles correspond to the selectors.
   2 : If an error/warning has been issue during the dump.
       See DIR/dump_errors.log for the listing of the errors.
 )";
-  // Add command-line options for hashed long filenames and ignoring long filenames
-  bool useHashedLongnames = false;
-  bool ignoreLongnames = false;
-  for (int i = 1; i < argc; ++i) {
-    if (std::string(argv[i]) == "--hashed-longnames") {
-      useHashedLongnames = true;
-    }
-    if (std::string(argv[i]) == "--ignore-longnames") {
-      ignoreLongnames = true;
-    }
-  }
-
 
 int subcmdInfo(ZimDumper &app, std::map<std::string, docopt::value> &args)
 {
